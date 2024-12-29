@@ -1,7 +1,7 @@
 # Client Code
 import socket
 from time import time, sleep
-from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from cryptography.hazmat.primitives.asymmetric import ec, rsa, padding
 from cryptography.hazmat.primitives import serialization
 import base64
 
@@ -57,7 +57,7 @@ _, ecc_computation_time = measure_computation_time(private_key_ecc.exchange, ec.
 
 # Calculate RSA shared key (dummy encryption for simulation)
 dummy_data = base64.b64encode(b"test data")
-_, rsa_computation_time = measure_computation_time(server_public_key_rsa.encrypt, dummy_data, rsa.padding.PKCS1v15())
+_, rsa_computation_time = measure_computation_time(server_public_key_rsa.encrypt, dummy_data, padding.PKCS1v15())
 
 # Display results
 print("[CLIENT] --- Performance Results ---")
