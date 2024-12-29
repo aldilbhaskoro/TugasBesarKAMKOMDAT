@@ -1,8 +1,8 @@
 # Server Code
 import socket
 from time import time, sleep
-from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import ec, rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
 import base64
 
 # Helper function to measure delays
@@ -62,7 +62,15 @@ _, ecc_computation_time = measure_computation_time(private_key_ecc.exchange, ec.
 
 # Calculate RSA shared key (dummy decryption for simulation)
 dummy_data = base64.b64encode(b"test data")
-_, rsa_computation_time = measure_computation_time(private_key_rsa.decrypt, dummy_data)
+_, rsa_computation_time = measure_computation_time(
+    private_key_rsa.decrypt,
+    dummy_data,
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
 
 # Display results
 print("[SERVER] --- Performance Results ---")
