@@ -1,90 +1,99 @@
-# Evaluasi Performa Diffie-Hellman
 
-Repository ini berisi implementasi sistem evaluasi performa Diffie-Hellman menggunakan dua algoritma kriptografi: **Elliptic Curve Cryptography (ECC)** dan **ElGamal (diaproksimasi dengan RSA)**. Sistem ini dibuat menggunakan Python dan mendemonstrasikan pembuatan kunci, enkripsi, dekripsi, serta perhitungan shared key menggunakan kedua algoritma.
+Untuk dokumentasi lengkap dalam bahasa Indonesia, silakan kunjungi [README.md dalam Bahasa Indonesia](./README-ID.md).
+---
 
-## Fitur
-- **Pertukaran Kunci ECC**: Menggunakan kurva SECP256R1 untuk menghasilkan kunci dan menghitung shared secret.
-- **Simulasi ElGamal**: Menggunakan RSA untuk enkripsi dan dekripsi sebagai aproksimasi performa ElGamal.
-- **Pengukuran Performa**: Mengukur waktu komputasi untuk operasi ECC dan RSA dengan rata-rata dari 100 sampel.
-- **Pemrograman Socket**: Memfasilitasi komunikasi antara server dan client untuk pertukaran kunci publik.
+# Diffie-Hellman Performance Evaluation
 
-## Kebutuhan Sistem
-- Python 3.9 atau lebih tinggi
-- Library Python yang dibutuhkan:
+This repository contains an implementation of a performance evaluation system for Diffie-Hellman using two cryptographic algorithms: **Elliptic Curve Cryptography (ECC)** and **ElGamal (approximated with RSA)**. The system is built using Python and demonstrates key generation, encryption, decryption, and shared key computation using both algorithms.
+
+## Features
+- **ECC Key Exchange**: Uses the SECP256R1 curve to generate keys and compute the shared secret.
+- **ElGamal Simulation**: Uses RSA for encryption and decryption as an approximation of ElGamal performance.
+- **Performance Measurement**: Measures the computation time for ECC and RSA operations based on the average of 100 samples at specific data sizes (50, 100, and 150 bytes).
+- **Socket Programming**: Facilitates communication between the server and client for public key exchange.
+
+## System Requirements
+- Python 3.9 or higher
+- Required Python libraries:
   - `cryptography`
 
-Untuk menginstal library yang dibutuhkan, jalankan:
+To install the required libraries, run:
 ```bash
 pip install cryptography
 ```
 
-## Cara Kerja
+## How It Works
 ### Server
-Server menghasilkan kunci ECC dan RSA, kemudian mengirimkan kunci publik ke client. Setelah menerima kunci publik dari client, server menghitung shared key untuk ECC dan mensimulasikan operasi RSA (enkripsi dan dekripsi).
+The server generates ECC and RSA keys, then sends the public keys to the client. Upon receiving the public key from the client, the server computes the shared key for ECC and simulates RSA operations (encryption and decryption). The server also records the test results and sends them to the client for display.
 
 ### Client
-Client menerima kunci publik ECC dan RSA dari server, kemudian menghasilkan kunci ECC dan RSA miliknya sendiri dan mengirimkan kunci publik kembali ke server. Client juga menghitung shared key untuk ECC dan mensimulasikan operasi RSA.
+The client receives the ECC and RSA public keys from the server, then generates its own ECC and RSA keys and sends the public keys back to the server. The client also computes the shared key for ECC and simulates RSA operations. The test results from the server are displayed in a table format.
 
-## File
-- `Server.py`: Implementasi sisi server.
-- `Client.py`: Implementasi sisi client.
-- `README.md`: Dokumentasi ini.
+## Testing
+Testing is conducted for data sizes:
+- **50 bytes**
+- **100 bytes**
+- **150 bytes**
 
-## Cara Menjalankan
-1. Jalankan server:
+### Measured Parameters
+1. **Communication Delay**:
+   - The time taken to send and receive data between the server and client.
+2. **Computation Delay**:
+   - The time taken to compute public keys and shared keys for ECC and RSA.
+
+### Sample Test Results
+| **Data Size (bytes)** | **ECC Avg Time (s)** | **RSA Avg Time (s)** |
+|-----------------------|----------------------|----------------------|
+| 50                    | 0.001234             | 0.002345             |
+| 100                   | 0.001456             | 0.002567             |
+| 150                   | 0.001678             | 0.002789             |
+
+## Files
+- `server.py`: Server-side implementation.
+- `client.py`: Client-side implementation.
+- `README.md`: This documentation.
+
+## How to Run
+1. Start the server:
    ```bash
-   python Server.py
+   python server.py
    ```
-2. Jalankan client:
+2. Start the client:
    ```bash
-   python Client.py
+   python client.py
    ```
-3. Amati hasil di terminal, termasuk waktu komputasi untuk ECC dan RSA.
+3. Observe the results in the terminal:
+   - **Server**: Displays process logs and sends performance results to the client.
+   - **Client**: Displays the performance results received from the server in a table format.
 
-## Contoh Output
+## Example Output
 ### Server
 ```plaintext
-[SERVER] Waiting for connection...
-[SERVER] Connection established with ('127.0.0.1', 59105)
-
-[SERVER] Generating ECC keys...
-[SERVER] Generating RSA keys (ElGamal equivalent)...
-[SERVER] Sending ECC public key to client...
-[SERVER] Sending RSA public key to client...
-
-[SERVER] Received client's ECC public key.
-[SERVER] Received client's RSA public key.
-
-[SERVER] Encrypting data with RSA public key...
-[SERVER] Decrypting data with RSA private key...
-
 [SERVER] --- Performance Results ---
-ECC Computation Time: 0.002345 seconds
-RSA (ElGamal Approximation) Computation Time: 0.005678 seconds
-------------------------------------
+Data Size     ECC Avg Time (s)     RSA Avg Time (s)
+----------------------------------------------------
+50            0.001234             0.002345
+100           0.001456             0.002567
+150           0.001678             0.002789
+----------------------------------------------------
+[SERVER] Performance results have been sent to the client.
 ```
 
 ### Client
 ```plaintext
-[CLIENT] Received server's ECC public key.
-[CLIENT] Received server's RSA public key.
-
-[CLIENT] Generating ECC keys...
-[CLIENT] Generating RSA keys (ElGamal equivalent)...
-[CLIENT] Sending ECC public key to server...
-[CLIENT] Sending RSA public key to server...
-
-[CLIENT] Encrypting data with RSA public key...
-[CLIENT] Decrypting data with RSA private key...
-
-[CLIENT] --- Performance Results ---
-ECC Computation Time: 0.002012 seconds
-RSA (ElGamal Approximation) Computation Time: 0.006123 seconds
-------------------------------------
+[CLIENT] --- Performance Results from Server ---
+Data Size     ECC Avg Time (s)     RSA Avg Time (s)
+----------------------------------------------------
+50            0.001234             0.002345
+100           0.001456             0.002567
+150           0.001678             0.002789
+----------------------------------------------------
 ```
 
-## Lisensi
-Proyek ini dilisensikan di bawah MIT License. Lihat file LICENSE untuk detailnya.
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
 
-## Penulis
+## Author
 [Aldil Bhaskoro Anggito Isdwihardjo](https://github.com/aldilbhaskoro)
+
+--- 
