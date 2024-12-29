@@ -1,69 +1,65 @@
 # Client Code
 import socket
-from time import time, sleep
-from cryptography.hazmat.primitives.asymmetric import ec, rsa, padding
+from time import time
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from cryptography.hazmat.primitives import serialization
-import base64
 
-# Helper function to measure delays
-def measure_computation_time(func, *args):
-    start_time = time()
-    result = func(*args)
-    computation_time = time() - start_time
-    return result, computation_time
+# Helper function to receive large data
+def receive_large_data(conn):
+    data = b""
+    while True:
+        part = conn.recv(1024)
+        data += part
+        if len(part) < 1024:  # End of transmission
+            break
+    return data.decode('utf-8')
 
-# Configure socket
+# Configure client socket
 HOST = 'localhost'
 PORT = 12345
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((HOST, PORT))
 
-# Receive server's ECC and RSA public keys
-server_public_key_ecc_bytes = client.recv(1024)
-print("[CLIENT] Received server's ECC public key.")
-server_public_key_ecc = serialization.load_pem_public_key(server_public_key_ecc_bytes)
+print("\n[CLIENT] Terhubung ke server.\n")
 
-server_public_key_rsa_bytes = client.recv(1024)
-print("[CLIENT] Received server's RSA public key.\n")
-server_public_key_rsa = serialization.load_pem_public_key(server_public_key_rsa_bytes)
+# Data sizes to test (in bytes)
+data_sizes = [50, 100, 150]
 
-# ECC Key Generation
-print("[CLIENT] Generating ECC keys...")
-private_key_ecc = ec.generate_private_key(ec.SECP256R1())
-public_key_ecc = private_key_ecc.public_key()
-public_key_ecc_bytes = public_key_ecc.public_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PublicFormat.SubjectPublicKeyInfo
-)
+# Perform 100 iterations
+for iteration in range(100):
+    print(f"\n[CLIENT] Iterasi {iteration + 1}/100")
 
-# RSA (ElGamal) Key Generation
-print("[CLIENT] Generating RSA keys (ElGamal equivalent)...")
-private_key_rsa = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-public_key_rsa = private_key_rsa.public_key()
-public_key_rsa_bytes = public_key_rsa.public_bytes(
-    encoding=serialization.Encoding.PEM,
-    format=serialization.PublicFormat.SubjectPublicKeyInfo
-)
+    # Receive server's public keys
+    server_public_key_ecc_bytes = client.recv(1024)
+    server_public_key_ecc = serialization.load_pem_public_key(server_public_key_ecc_bytes)
 
-# Send ECC and RSA public keys to server
-print("[CLIENT] Sending ECC public key to server...")
-client.sendall(public_key_ecc_bytes)
-sleep(0.1)
-print("[CLIENT] Sending RSA public key to server...\n")
-client.sendall(public_key_rsa_bytes)
+    server_public_key_rsa_bytes = client.recv(1024)
+    server_public_key_rsa = serialization.load_pem_public_key(server_public_key_rsa_bytes)
 
-# Calculate ECC shared key
-_, ecc_computation_time = measure_computation_time(private_key_ecc.exchange, ec.ECDH(), server_public_key_ecc)
+    # Generate ECC keys
+    private_key_ecc = ec.generate_private_key(ec.SECP256R1())
+    public_key_ecc = private_key_ecc.public_key()
+    public_key_ecc_bytes = public_key_ecc.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
 
-# Calculate RSA shared key (dummy encryption for simulation)
-dummy_data = base64.b64encode(b"test data")
-_, rsa_computation_time = measure_computation_time(server_public_key_rsa.encrypt, dummy_data, padding.PKCS1v15())
+    # Generate RSA keys
+    private_key_rsa = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    public_key_rsa = private_key_rsa.public_key()
+    public_key_rsa_bytes = public_key_rsa.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
 
-# Display results
-print("[CLIENT] --- Performance Results ---")
-print(f"ECC Computation Time: {ecc_computation_time:.6f} seconds")
-print(f"RSA (ElGamal Approximation) Computation Time: {rsa_computation_time:.6f} seconds")
-print("------------------------------------\n")
+    # Send public keys to server
+    client.sendall(public_key_ecc_bytes)  # ECC key
+    client.sendall(public_key_rsa_bytes)  # RSA key
 
-# Close connection
+# Receive and display performance results from server
+print("\n[CLIENT] --- Hasil Performa dari Server ---")
+results = receive_large_data(client)
+print(results)
+
+# Close the connection
 client.close()
