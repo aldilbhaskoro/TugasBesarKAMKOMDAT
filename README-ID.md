@@ -49,6 +49,7 @@ Pengujian dilakukan untuk ukuran data:
 ## File
 - `server.py`: Implementasi sisi server.
 - `client.py`: Implementasi sisi client.
+- `README-ID.md`: Dokumentasi ini.
 
 
 ## Cara Menjalankan
