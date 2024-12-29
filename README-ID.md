@@ -1,4 +1,5 @@
 ---
+
 # Evaluasi Performa Diffie-Hellman
 
 Repository ini berisi implementasi sistem evaluasi performa Diffie-Hellman menggunakan dua algoritma kriptografi: **Elliptic Curve Cryptography (ECC)** dan **ElGamal (diaproksimasi dengan RSA)**. Sistem ini dibuat menggunakan Python dan mendemonstrasikan pembuatan kunci, enkripsi, dekripsi, serta perhitungan shared key menggunakan kedua algoritma.
@@ -48,7 +49,7 @@ Pengujian dilakukan untuk ukuran data:
 ## File
 - `server.py`: Implementasi sisi server.
 - `client.py`: Implementasi sisi client.
-- `README.md`: Dokumentasi ini.
+- `README-ID.md`: Dokumentasi ini.
 
 ## Cara Menjalankan
 1. Jalankan server:
