@@ -32,7 +32,7 @@ public_key_ecc_bytes = public_key_ecc.public_bytes(
     format=serialization.PublicFormat.SubjectPublicKeyInfo
 )
 
-# ElGamal (RSA) Key Generation
+# RSA (ElGamal) Key Generation
 print("[SERVER] Generating RSA keys (ElGamal equivalent)...")
 private_key_rsa = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 public_key_rsa = private_key_rsa.public_key()
@@ -58,13 +58,24 @@ print("[SERVER] Received client's RSA public key.\n")
 client_public_key_rsa = serialization.load_pem_public_key(client_public_key_rsa_bytes)
 
 # Calculate ECC shared key
+print("[SERVER] Calculating ECC shared key...")
 _, ecc_computation_time = measure_computation_time(private_key_ecc.exchange, ec.ECDH(), client_public_key_ecc)
 
-# Calculate RSA shared key (dummy decryption for simulation)
-dummy_data = base64.b64encode(b"test data")
+# Simulate RSA operation: Encrypt and then Decrypt
+print("[SERVER] Encrypting data with RSA public key...")
+encrypted_data = public_key_rsa.encrypt(
+    b"test data",
+    padding.OAEP(
+        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None
+    )
+)
+
+print("[SERVER] Decrypting data with RSA private key...")
 _, rsa_computation_time = measure_computation_time(
     private_key_rsa.decrypt,
-    dummy_data,
+    encrypted_data,
     padding.OAEP(
         mgf=padding.MGF1(algorithm=hashes.SHA256()),
         algorithm=hashes.SHA256(),
@@ -73,7 +84,7 @@ _, rsa_computation_time = measure_computation_time(
 )
 
 # Display results
-print("[SERVER] --- Performance Results ---")
+print("\n[SERVER] --- Performance Results ---")
 print(f"ECC Computation Time: {ecc_computation_time:.6f} seconds")
 print(f"RSA (ElGamal Approximation) Computation Time: {rsa_computation_time:.6f} seconds")
 print("------------------------------------\n")
