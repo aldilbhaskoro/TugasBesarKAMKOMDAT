@@ -1,5 +1,5 @@
 
-Untuk dokumentasi dalam bahasa Indonesia, silakan klik [disini](./README-ID.md).
+Untuk dokumentasi dalam bahasa Indonesia, silakan klik [disini](./README-ID.txt).
 ---
 
 # Diffie-Hellman Performance Evaluation
