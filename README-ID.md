@@ -13,14 +13,12 @@ Repository ini berisi implementasi sistem evaluasi performa Diffie-Hellman mengg
 ## Kebutuhan Sistem
 - Python 3.9 atau lebih tinggi
 - Library Python yang dibutuhkan:
-  - cryptography
+  - `cryptography`
 
 Untuk menginstal library yang dibutuhkan, jalankan:
-
-bash
+```bash
 pip install cryptography
-
-
+```
 
 ## Cara Kerja
 ### Server
@@ -49,33 +47,26 @@ Pengujian dilakukan untuk ukuran data:
 | 150                    | 0.001678            | 0.002789             |
 
 ## File
-- server.py: Implementasi sisi server.
-- client.py: Implementasi sisi client.
-- README.md: Dokumentasi ini.
+- `server.py`: Implementasi sisi server.
+- `client.py`: Implementasi sisi client.
+- `README.md`: Dokumentasi ini.
 
 ## Cara Menjalankan
 1. Jalankan server:
-   
-
-bash
+   ```bash
    python server.py
-
-
+   ```
 2. Jalankan client:
-   
-
-bash
+   ```bash
    python client.py
-
-
+   ```
 3. Amati hasil di terminal:
    - **Server**: Menampilkan log proses dan mengirim hasil performa ke client.
    - **Client**: Menampilkan hasil performa yang diterima dari server dalam format tabel.
 
 ## Contoh Output
 ### Server
-
-plaintext
+```plaintext
 [SERVER] --- Hasil Performa ---
 Ukuran Data     ECC Avg Time (s)     RSA Avg Time (s)
 -------------------------------------------------------
@@ -84,12 +75,10 @@ Ukuran Data     ECC Avg Time (s)     RSA Avg Time (s)
 150             0.001678             0.002789
 -------------------------------------------------------
 [SERVER] Hasil performa telah dikirim ke client.
-
-
+```
 
 ### Client
-
-plaintext
+```plaintext
 [CLIENT] --- Hasil Performa dari Server ---
 Ukuran Data     ECC Avg Time (s)     RSA Avg Time (s)
 -------------------------------------------------------
@@ -97,8 +86,7 @@ Ukuran Data     ECC Avg Time (s)     RSA Avg Time (s)
 100             0.001456             0.002567
 150             0.001678             0.002789
 -------------------------------------------------------
-
-
+```
 
 ## Lisensi
 Proyek ini dilisensikan di bawah MIT License. Lihat file LICENSE untuk detailnya.
